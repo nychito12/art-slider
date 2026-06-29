@@ -1,112 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Swiper CDN -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<title>Portfolio Slider</title>
 
 <style>
 body{
     margin:0;
     font-family: Arial;
     background:#f8fff9;
+    text-align:center;
 }
 
 .title{
-    text-align:center;
-    padding:15px;
-    font-size:22px;
+    font-size:24px;
     font-weight:bold;
     color:#6aa84f;
+    margin:20px 0;
 }
 
-/* 메인 이미지 */
-.swiper {
-    width: 100%;
-    max-width: 700px;
-    padding-bottom: 10px;
-}
-
-.swiper-slide img{
+.main-img{
     width:100%;
+    max-width:700px;
     border:3px solid #B6D7A8;
     border-radius:10px;
 }
 
-/* 하단 썸네일 */
-.thumb {
-    height:80px;
-    opacity:0.5;
+.counter{
+    margin:10px 0;
+    font-size:14px;
+    color:#666;
 }
 
-.thumb img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    border-radius:8px;
+.thumb-wrap{
+    white-space:nowrap;
+    overflow-x:auto;
+    padding:10px;
 }
 
-.swiper-slide-thumb-active{
-    opacity:1;
+.thumb{
+    width:90px;
+    margin:3px;
+    border:2px solid #B6D7A8;
+    border-radius:6px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="title">🎨 SAMPLE GALLERY</div>
+<div class="title">🎨 SAMPLE SLIDER</div>
 
-<!-- 메인 -->
-<div class="swiper mainSwiper">
-  <div class="swiper-wrapper">
+<!-- 대표 이미지 (GitHub 이미지로 변경 가능) -->
+<img id="main" class="main-img" src="img1.jpg">
 
-    <div class="swiper-slide"><img src="IMG1"></div>
-    <div class="swiper-slide"><img src="IMG2"></div>
-    <div class="swiper-slide"><img src="IMG3"></div>
-    <div class="swiper-slide"><img src="IMG4"></div>
-    <div class="swiper-slide"><img src="IMG5"></div>
-    <div class="swiper-slide"><img src="IMG6"></div>
-
-  </div>
-
-  <div class="swiper-pagination"></div>
-</div>
+<div class="counter" id="counter">1 / 6</div>
 
 <!-- 썸네일 -->
-<div class="swiper thumbSwiper">
-  <div class="swiper-wrapper">
+<div class="thumb-wrap">
 
-    <div class="swiper-slide thumb"><img src="IMG1"></div>
-    <div class="swiper-slide thumb"><img src="IMG2"></div>
-    <div class="swiper-slide thumb"><img src="IMG3"></div>
-    <div class="swiper-slide thumb"><img src="IMG4"></div>
-    <div class="swiper-slide thumb"><img src="IMG5"></div>
-    <div class="swiper-slide thumb"><img src="IMG6"></div>
+<img class="thumb" src="img1.jpg" onclick="changeImg('img1.jpg',1)">
+<img class="thumb" src="img2.jpg" onclick="changeImg('img2.jpg',2)">
+<img class="thumb" src="img3.jpg" onclick="changeImg('img3.jpg',3)">
+<img class="thumb" src="img4.jpg" onclick="changeImg('img4.jpg',4)">
+<img class="thumb" src="img5.jpg" onclick="changeImg('img5.jpg',5)">
+<img class="thumb" src="img6.jpg" onclick="changeImg('img6.jpg',6)">
 
-  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
 <script>
-const thumbSwiper = new Swiper(".thumbSwiper", {
-  slidesPerView: 6,
-  spaceBetween: 5,
-  watchSlidesProgress: true,
-});
-
-const mainSwiper = new Swiper(".mainSwiper", {
-  spaceBetween: 10,
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-  },
-  thumbs: {
-    swiper: thumbSwiper,
-  },
-});
+function changeImg(src, index){
+    document.getElementById("main").src = src;
+    document.getElementById("counter").innerText = index + " / 6";
+}
 </script>
 
 </body>
