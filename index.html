@@ -4,76 +4,57 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Portfolio Slider</title>
-
 <style>
 body{
     margin:0;
     font-family: Arial;
-    background:#f8fff9;
+    background:transparent;
     text-align:center;
 }
 
-.title{
-    font-size:24px;
-    font-weight:bold;
-    color:#6aa84f;
-    margin:20px 0;
-}
-
-.main-img{
+/* 메인 이미지 (작게) */
+#main{
     width:100%;
-    max-width:700px;
-    border:3px solid #B6D7A8;
-    border-radius:10px;
+    max-width:500px;   /* 👉 사이즈 줄임 */
+    border-radius:8px;
 }
 
-.counter{
-    margin:10px 0;
-    font-size:14px;
-    color:#666;
-}
-
+/* 썸네일 */
 .thumb-wrap{
     white-space:nowrap;
     overflow-x:auto;
-    padding:10px;
+    margin-top:10px;
 }
 
 .thumb{
-    width:90px;
+    width:70px;   /* 👉 썸네일도 축소 */
     margin:3px;
-    border:2px solid #B6D7A8;
     border-radius:6px;
+    cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="title">🎨 SAMPLE</div>
+<!-- 메인 이미지 -->
+<img id="main" src="img1.jpg">
 
-<!-- 대표 이미지 (GitHub 이미지로 변경 가능) -->
-<img id="main" class="main-img" src="img1.png">
-
-<div class="counter" id="counter">1 / 6</div>
-
-<!-- 썸네일 -->
+<!-- 썸네일만 -->
 <div class="thumb-wrap">
 
-<img class="thumb" src="img1.png" onclick="changeImg('img1.png',1)">
-<img class="thumb" src="img2.png" onclick="changeImg('img2.png',2)">
-<img class="thumb" src="img3.png" onclick="changeImg('img3.png',3)">
-<img class="thumb" src="img4.png" onclick="changeImg('img4.png',4)">
-<img class="thumb" src="img5.png" onclick="changeImg('img5.png',5)">
-<img class="thumb" src="img6.png" onclick="changeImg('img6.png',6)">
+<img class="thumb" src="img1.jpg" onclick="changeImg('img1.jpg')">
+<img class="thumb" src="img2.jpg" onclick="changeImg('img2.jpg')">
+<img class="thumb" src="img3.jpg" onclick="changeImg('img3.jpg')">
+<img class="thumb" src="img4.jpg" onclick="changeImg('img4.jpg')">
+<img class="thumb" src="img5.jpg" onclick="changeImg('img5.jpg')">
+<img class="thumb" src="img6.jpg" onclick="changeImg('img6.jpg')">
 
 </div>
 
 <script>
-function changeImg(src, index){
+function changeImg(src){
     document.getElementById("main").src = src;
-    document.getElementById("counter").innerText = index + " / 6";
 }
 </script>
 
