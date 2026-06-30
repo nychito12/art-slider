@@ -5,18 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+
+/* =====================
+   BASE
+===================== */
 body{
     margin:0;
     text-align:center;
     font-family: Arial;
     background:transparent;
+    overflow-x:hidden;
 }
 
 /* =====================
    MAIN IMAGE
 ===================== */
 #main{
-    width:auto;
+    display:block;
+    margin:0 auto;
     max-width:92vw;
     max-height:75vh;
     object-fit:contain;
@@ -25,24 +31,30 @@ body{
 }
 
 /* =====================
-   THUMBNAIL (🔥 구조 안정화 핵심)
+   🔥 THUMBNAIL (완전 고정 구조)
 ===================== */
 .thumb-wrap{
+    position:fixed;
+    bottom:0;
+    left:0;
     width:100%;
-    overflow-x:auto;
-    padding:8px 0;
-    white-space:nowrap;
-    scroll-behavior:smooth;
-    font-size:0; /* gap 흔들림 방지 */
-}
 
-.thumb-inner{
-    display:inline-flex;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
     gap:6px;
-    padding:0 10px;
+    padding:10px;
+
+    background:rgba(255,255,255,0.0);
+
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+
+    height:90px; /* 🔥 핵심: 절대 고정 */
+    z-index:999;
 }
 
-/* 🔥 절대 크기 고정 */
 .thumb{
     width:68px;
     height:68px;
@@ -51,10 +63,12 @@ body{
     border-radius:6px;
     cursor:pointer;
     border:2px solid transparent;
-    box-sizing:border-box;
+
+    /* 흔들림 완전 제거 */
+    transform:none !important;
 }
 
-/* active는 "크기 변화 금지" */
+/* active는 “시각효과만” */
 .thumb.active{
     border:2px solid #6aa84f;
     box-shadow:0 0 0 2px rgba(106,168,79,0.25);
@@ -73,7 +87,7 @@ body{
     background:rgba(0,0,0,0.9);
     justify-content:center;
     align-items:center;
-    z-index:999;
+    z-index:9999;
 }
 
 .modal img{
@@ -85,6 +99,7 @@ body{
 .modal.show{
     display:flex;
 }
+
 </style>
 </head>
 
@@ -93,18 +108,16 @@ body{
 <!-- MAIN -->
 <img id="main" src="img1.png" onclick="openModal()">
 
-<!-- THUMBNAILS -->
+<!-- THUMBNAILS (🔥 완전 고정 하단 UI) -->
 <div class="thumb-wrap" id="thumbWrap">
-    <div class="thumb-inner" id="thumbInner">
 
-        <img class="thumb active" src="img1.png" onclick="changeImg(0)">
-        <img class="thumb" src="img2.png" onclick="changeImg(1)">
-        <img class="thumb" src="img3.png" onclick="changeImg(2)">
-        <img class="thumb" src="img4.png" onclick="changeImg(3)">
-        <img class="thumb" src="img5.png" onclick="changeImg(4)">
-        <img class="thumb" src="img6.png" onclick="changeImg(5)">
+<img class="thumb active" src="img1.png" onclick="changeImg(0)">
+<img class="thumb" src="img2.png" onclick="changeImg(1)">
+<img class="thumb" src="img3.png" onclick="changeImg(2)">
+<img class="thumb" src="img4.png" onclick="changeImg(3)">
+<img class="thumb" src="img5.png" onclick="changeImg(4)">
+<img class="thumb" src="img6.png" onclick="changeImg(5)">
 
-    </div>
 </div>
 
 <!-- MODAL -->
@@ -151,29 +164,18 @@ function showImage(index){
         t.classList.toggle("active", i === index);
     });
 
-    centerThumb(index);
+    // 🔥 중앙정렬 (iframe에서도 가장 안정적인 방식)
+    centerThumb(thumbs[index]);
 }
 
 /* =====================
-   🔥 완전 안정 scrollLeft 기반 중앙정렬
+   🔥 썸네일 중앙정렬 (안정형)
 ===================== */
-function centerThumb(index){
-    const wrap = document.getElementById("thumbWrap");
-    const inner = document.getElementById("thumbInner");
-    const thumbs = document.querySelectorAll(".thumb");
-
-    const el = thumbs[index];
-
-    const wrapWidth = wrap.offsetWidth;
-    const elLeft = el.offsetLeft;
-    const elWidth = el.offsetWidth;
-
-    const target =
-        elLeft - (wrapWidth / 2) + (elWidth / 2);
-
-    wrap.scrollTo({
-        left: target,
-        behavior: "smooth"
+function centerThumb(el){
+    el.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest"
     });
 }
 
@@ -182,7 +184,7 @@ function changeImg(index){
 }
 
 /* =====================
-   SWIPE
+   SWIPE (모바일)
 ===================== */
 let startX = 0;
 
