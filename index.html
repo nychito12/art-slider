@@ -18,6 +18,8 @@ body{
 #main{
     width:100%;
     max-width:500px;
+    max-height:70vh;   /* 🔥 추가 */
+    object-fit:contain; /* 🔥 핵심 */
     border-radius:8px;
     cursor:zoom-in;
     transition: all 0.3s ease;
@@ -25,8 +27,8 @@ body{
 
 #main.wide{
     max-width:750px;
+    max-height:80vh;   /* 🔥 가로 이미지만 더 크게 */
 }
-
 /* =====================
    THUMBNAIL
 ===================== */
