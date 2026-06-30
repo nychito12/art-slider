@@ -5,76 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+/* =====================
+   BASE (모바일 최적화 핵심)
+===================== */
 body{
     margin:0;
+    text-align:center;
     font-family: Arial;
     background:transparent;
-    text-align:center;
+    -webkit-text-size-adjust:100%;
 }
 
 /* =====================
-   MAIN IMAGE
+   MAIN IMAGE (자동 최적화)
 ===================== */
 #main{
-    width:100%;
-    max-width:500px;
-    max-height:70vh;   /* 🔥 추가 */
-    object-fit:contain; /* 🔥 핵심 */
+    width:auto;
+    max-width:92vw;   /* 모바일 기준 핵심 */
+    max-height:75vh;
+    object-fit:contain;
     border-radius:8px;
     cursor:zoom-in;
     transition: all 0.3s ease;
 }
 
+/* 가로 이미지 */
 #main.wide{
-    max-width:750px;
-    max-height:80vh;   /* 🔥 가로 이미지만 더 크게 */
+    max-width:96vw;
+    max-height:70vh;
 }
+
+/* 세로 이미지 */
+#main.tall{
+    max-width:65vw;
+    max-height:85vh;
+}
+
 /* =====================
-   THUMBNAIL
+   THUMBNAIL (모바일 스크롤 최적화)
 ===================== */
 .thumb-wrap{
     display:flex;
     overflow-x:auto;
-    justify-content:flex-start;
     gap:6px;
     margin-top:10px;
-    padding:5px;
+    padding:8px;
     scroll-behavior:smooth;
+
+    -webkit-overflow-scrolling:touch; /* 🔥 모바일 부드러운 스크롤 */
 }
 
 .thumb{
-    width:70px;
+    width:68px;
+    height:68px;
+    object-fit:cover;
     border-radius:6px;
     cursor:pointer;
     border:2px solid transparent;
-    transition:0.2s;
     flex:0 0 auto;
+    transition:0.2s;
 }
 
 .thumb.active{
     border:2px solid #6aa84f;
-    transform: scale(1.05);
+    transform:scale(1.05);
 }
 
 /* =====================
-   MODAL (이미지 확대)
+   MODAL (모바일 확대 최적화)
 ===================== */
 .modal{
     display:none;
     position:fixed;
-    z-index:999;
-    left:0;
     top:0;
+    left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.85);
+    background:rgba(0,0,0,0.9);
     justify-content:center;
     align-items:center;
+    z-index:999;
 }
 
 .modal img{
-    max-width:90%;
-    max-height:90%;
+    max-width:95vw;
+    max-height:95vh;
     border-radius:10px;
 }
 
@@ -86,58 +101,53 @@ body{
 
 <body>
 
-<!-- 메인 이미지 -->
+<!-- MAIN IMAGE -->
 <img id="main" src="img1.png" onclick="openModal()">
 
-<!-- 썸네일 -->
-<div class="thumb-wrap" id="thumbWrap">
+<!-- THUMBNAILS -->
+<div class="thumb-wrap">
 
-<img class="thumb active" src="img1.png" onclick="changeImg(this,'img1.png',0)">
-<img class="thumb" src="img2.png" onclick="changeImg(this,'img2.png',1)">
-<img class="thumb" src="img3.png" onclick="changeImg(this,'img3.png',2)">
-<img class="thumb" src="img4.png" onclick="changeImg(this,'img4.png',3)">
-<img class="thumb" src="img5.png" onclick="changeImg(this,'img5.png',4)">
-<img class="thumb" src="img6.png" onclick="changeImg(this,'img6.png',5)">
+<img class="thumb active" src="img1.png" onclick="changeImg(this,'img1.png')">
+<img class="thumb" src="img2.png" onclick="changeImg(this,'img2.png')">
+<img class="thumb" src="img3.png" onclick="changeImg(this,'img3.png')">
+<img class="thumb" src="img4.png" onclick="changeImg(this,'img4.png')">
+<img class="thumb" src="img5.png" onclick="changeImg(this,'img5.png')">
+<img class="thumb" src="img6.png" onclick="changeImg(this,'img6.png')">
 
 </div>
 
-<!-- 모달 -->
+<!-- MODAL -->
 <div class="modal" id="modal" onclick="closeModal()">
-    <img id="modalImg" src="">
+    <img id="modalImg">
 </div>
 
 <script>
 
-let currentIndex = 0;
-const images = [
-"img1.png",
-"img2.png",
-"img3.png",
-"img4.png",
-"img5.png",
-"img6.png"
-];
-
-function changeImg(el, src, index){
+function changeImg(el, src){
     const img = document.getElementById("main");
 
-    currentIndex = index;
-
     img.onload = function(){
-        if(img.naturalWidth > img.naturalHeight){
-            img.classList.add("wide");
-        } else {
-            img.classList.remove("wide");
+
+        // 초기화
+        img.classList.remove("wide");
+        img.classList.remove("tall");
+
+        // 🔥 자동 비율 최적화
+        if(img.naturalWidth > img.naturalHeight * 1.2){
+            img.classList.add("wide"); // 가로
+        }
+        else if(img.naturalHeight > img.naturalWidth * 1.2){
+            img.classList.add("tall"); // 세로
         }
     };
 
     img.src = src;
 
-    // active 처리
+    // 썸네일 active
     document.querySelectorAll(".thumb").forEach(t => t.classList.remove("active"));
     el.classList.add("active");
 
-    // 🔥 썸네일 가운데 이동
+    // 가운데 이동 (모바일 포함)
     el.scrollIntoView({
         behavior:"smooth",
         inline:"center",
@@ -146,7 +156,7 @@ function changeImg(el, src, index){
 }
 
 /* =====================
-   MODAL OPEN / CLOSE
+   MODAL
 ===================== */
 function openModal(){
     const modal = document.getElementById("modal");
