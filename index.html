@@ -12,6 +12,9 @@ body{
     font-family: Arial;
     background:transparent;
     overflow-x:hidden;
+
+    /* 🔥 썸네일 공간 때문에 생기는 간격 보정 */
+    padding-bottom:85px;
 }
 
 /* =====================
@@ -28,33 +31,49 @@ body{
 }
 
 /* =====================
-   🔥 NAV ARROWS
+   🔥 ARROWS (overlay + 개선 버전)
 ===================== */
 .arrow{
     position:fixed;
     top:45%;
     transform:translateY(-50%);
-    font-size:40px;
+
+    width:62px;
+    height:62px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:30px;
     font-weight:bold;
-    color:#6aa84f;
+    color:white;
+
     cursor:pointer;
     user-select:none;
+
+    background:rgba(0,0,0,0.35);
+    border-radius:50%;
+
+    backdrop-filter:blur(4px);
+
     z-index:10000;
-    padding:10px;
-    background:rgba(255,255,255,0.6);
-    border-radius:10px;
+}
+
+.arrow:hover{
+    background:rgba(0,0,0,0.55);
 }
 
 #leftArrow{
-    left:10px;
+    left:12px;
 }
 
 #rightArrow{
-    right:10px;
+    right:12px;
 }
 
 /* =====================
-   THUMBNAIL (간격 줄임)
+   THUMBNAIL (하단 고정)
 ===================== */
 .thumb-wrap{
     position:fixed;
@@ -66,18 +85,18 @@ body{
     justify-content:center;
     align-items:center;
 
-    gap:4px;          /* 🔥 간격 줄임 */
-    padding:6px;      /* 🔥 padding 줄임 */
+    gap:4px;
+    padding:6px;
+
+    height:80px;
+    z-index:999;
 
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
-
-    height:80px;      /* 🔥 살짝 줄임 */
-    z-index:999;
 }
 
 .thumb{
-    width:64px;       /* 🔥 약간 축소 */
+    width:64px;
     height:64px;
     flex:0 0 auto;
     object-fit:cover;
@@ -122,12 +141,17 @@ body{
 
 <body>
 
-<!-- MAIN -->
-<img id="main" src="img1.png" onclick="openModal()">
+<!-- MAIN WRAP (overlay 기준) -->
+<div style="position:relative; display:block;">
 
-<!-- 🔥 화살표 버튼 -->
-<div id="leftArrow" class="arrow" onclick="prev()">‹</div>
-<div id="rightArrow" class="arrow" onclick="next()">›</div>
+    <!-- MAIN IMAGE -->
+    <img id="main" src="img1.png" onclick="openModal()">
+
+    <!-- ARROWS -->
+    <div id="leftArrow" class="arrow" onclick="prev()">‹</div>
+    <div id="rightArrow" class="arrow" onclick="next()">›</div>
+
+</div>
 
 <!-- THUMBNAILS -->
 <div class="thumb-wrap" id="thumbWrap">
@@ -185,7 +209,6 @@ function showImage(index){
         t.classList.toggle("active", i === index);
     });
 
-    // 썸네일 중앙정렬
     thumbs[index].scrollIntoView({
         behavior:"smooth",
         inline:"center",
@@ -213,7 +236,7 @@ function prev(){
 }
 
 /* =====================
-   SWIPE (모바일)
+   SWIPE
 ===================== */
 let startX = 0;
 
