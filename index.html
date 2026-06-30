@@ -6,9 +6,6 @@
 
 <style>
 
-/* =====================
-   BASE
-===================== */
 body{
     margin:0;
     text-align:center;
@@ -31,7 +28,33 @@ body{
 }
 
 /* =====================
-   🔥 THUMBNAIL (완전 고정 구조)
+   🔥 NAV ARROWS
+===================== */
+.arrow{
+    position:fixed;
+    top:45%;
+    transform:translateY(-50%);
+    font-size:40px;
+    font-weight:bold;
+    color:#6aa84f;
+    cursor:pointer;
+    user-select:none;
+    z-index:10000;
+    padding:10px;
+    background:rgba(255,255,255,0.6);
+    border-radius:10px;
+}
+
+#leftArrow{
+    left:10px;
+}
+
+#rightArrow{
+    right:10px;
+}
+
+/* =====================
+   THUMBNAIL (간격 줄임)
 ===================== */
 .thumb-wrap{
     position:fixed;
@@ -43,32 +66,26 @@ body{
     justify-content:center;
     align-items:center;
 
-    gap:6px;
-    padding:10px;
-
-    background:rgba(255,255,255,0.0);
+    gap:4px;          /* 🔥 간격 줄임 */
+    padding:6px;      /* 🔥 padding 줄임 */
 
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
 
-    height:90px; /* 🔥 핵심: 절대 고정 */
+    height:80px;      /* 🔥 살짝 줄임 */
     z-index:999;
 }
 
 .thumb{
-    width:68px;
-    height:68px;
+    width:64px;       /* 🔥 약간 축소 */
+    height:64px;
     flex:0 0 auto;
     object-fit:cover;
     border-radius:6px;
     cursor:pointer;
     border:2px solid transparent;
-
-    /* 흔들림 완전 제거 */
-    transform:none !important;
 }
 
-/* active는 “시각효과만” */
 .thumb.active{
     border:2px solid #6aa84f;
     box-shadow:0 0 0 2px rgba(106,168,79,0.25);
@@ -108,7 +125,11 @@ body{
 <!-- MAIN -->
 <img id="main" src="img1.png" onclick="openModal()">
 
-<!-- THUMBNAILS (🔥 완전 고정 하단 UI) -->
+<!-- 🔥 화살표 버튼 -->
+<div id="leftArrow" class="arrow" onclick="prev()">‹</div>
+<div id="rightArrow" class="arrow" onclick="next()">›</div>
+
+<!-- THUMBNAILS -->
 <div class="thumb-wrap" id="thumbWrap">
 
 <img class="thumb active" src="img1.png" onclick="changeImg(0)">
@@ -164,23 +185,31 @@ function showImage(index){
         t.classList.toggle("active", i === index);
     });
 
-    // 🔥 중앙정렬 (iframe에서도 가장 안정적인 방식)
-    centerThumb(thumbs[index]);
-}
-
-/* =====================
-   🔥 썸네일 중앙정렬 (안정형)
-===================== */
-function centerThumb(el){
-    el.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest"
+    // 썸네일 중앙정렬
+    thumbs[index].scrollIntoView({
+        behavior:"smooth",
+        inline:"center",
+        block:"nearest"
     });
 }
 
 function changeImg(index){
     showImage(index);
+}
+
+/* =====================
+   ARROWS
+===================== */
+function next(){
+    if(currentIndex < images.length - 1){
+        showImage(currentIndex + 1);
+    }
+}
+
+function prev(){
+    if(currentIndex > 0){
+        showImage(currentIndex - 1);
+    }
 }
 
 /* =====================
@@ -203,18 +232,6 @@ document.addEventListener("touchend", e=>{
         }
     }
 });
-
-function next(){
-    if(currentIndex < images.length - 1){
-        showImage(currentIndex + 1);
-    }
-}
-
-function prev(){
-    if(currentIndex > 0){
-        showImage(currentIndex - 1);
-    }
-}
 
 /* =====================
    MODAL
