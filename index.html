@@ -37,7 +37,7 @@ body{
 }
 
 /* =====================
-   THUMBNAIL (고정 UX)
+   THUMBNAIL (🔒 흔들림 완전 제거)
 ===================== */
 .thumb-wrap{
     display:flex;
@@ -48,6 +48,7 @@ body{
     -webkit-overflow-scrolling:touch;
 }
 
+/* 🔥 핵심: 크기 고정 + 절대 흔들림 방지 */
 .thumb{
     width:68px;
     height:68px;
@@ -56,12 +57,15 @@ body{
     cursor:pointer;
     border:2px solid transparent;
     flex:0 0 auto;
-    transition:0.2s;
+
+    /* ❌ transform 금지 (흔들림 원인 제거) */
+    transform:none !important;
 }
 
+/* 🔥 선택 표시만 변경 (크기 변화 없음) */
 .thumb.active{
     border:2px solid #6aa84f;
-    transform:scale(1.05);
+    box-shadow:0 0 0 2px rgba(106,168,79,0.25);
 }
 
 /* =====================
@@ -94,17 +98,19 @@ body{
 
 <body>
 
-<!-- MAIN -->
+<!-- MAIN IMAGE -->
 <img id="main" src="img1.png" onclick="openModal()">
 
 <!-- THUMBNAILS -->
 <div class="thumb-wrap">
+
 <img class="thumb active" src="img1.png" onclick="changeImg(0)">
 <img class="thumb" src="img2.png" onclick="changeImg(1)">
 <img class="thumb" src="img3.png" onclick="changeImg(2)">
 <img class="thumb" src="img4.png" onclick="changeImg(3)">
 <img class="thumb" src="img5.png" onclick="changeImg(4)">
 <img class="thumb" src="img6.png" onclick="changeImg(5)">
+
 </div>
 
 <!-- MODAL -->
@@ -114,6 +120,9 @@ body{
 
 <script>
 
+/* =====================
+   IMAGE LIST
+===================== */
 const images = [
 "img1.png",
 "img2.png",
@@ -126,7 +135,7 @@ const images = [
 let currentIndex = 0;
 
 /* =====================
-   IMAGE CHANGE (핵심)
+   IMAGE CHANGE
 ===================== */
 function showImage(index){
     const img = document.getElementById("main");
@@ -137,14 +146,15 @@ function showImage(index){
 
         if(img.naturalWidth > img.naturalHeight * 1.2){
             img.classList.add("wide");
-        } else if(img.naturalHeight > img.naturalWidth * 1.2){
+        }
+        else if(img.naturalHeight > img.naturalWidth * 1.2){
             img.classList.add("tall");
         }
     };
 
     img.src = images[index];
 
-    // active 고정 (썸네일 안 움직임)
+    // 🔥 썸네일 위치 고정 + active만 변경 (절대 이동 없음)
     document.querySelectorAll(".thumb").forEach((t,i)=>{
         t.classList.toggle("active", i === index);
     });
