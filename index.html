@@ -37,7 +37,7 @@ body{
 }
 
 /* =====================
-   THUMBNAIL (🔒 흔들림 완전 제거)
+   THUMBNAIL
 ===================== */
 .thumb-wrap{
     display:flex;
@@ -46,9 +46,9 @@ body{
     margin-top:10px;
     padding:8px;
     -webkit-overflow-scrolling:touch;
+    scroll-behavior:smooth;
 }
 
-/* 🔥 핵심: 크기 고정 + 절대 흔들림 방지 */
 .thumb{
     width:68px;
     height:68px;
@@ -57,12 +57,9 @@ body{
     cursor:pointer;
     border:2px solid transparent;
     flex:0 0 auto;
-
-    /* ❌ transform 금지 (흔들림 원인 제거) */
-    transform:none !important;
+    transition:0.2s;
 }
 
-/* 🔥 선택 표시만 변경 (크기 변화 없음) */
 .thumb.active{
     border:2px solid #6aa84f;
     box-shadow:0 0 0 2px rgba(106,168,79,0.25);
@@ -98,11 +95,11 @@ body{
 
 <body>
 
-<!-- MAIN IMAGE -->
+<!-- MAIN -->
 <img id="main" src="img1.png" onclick="openModal()">
 
 <!-- THUMBNAILS -->
-<div class="thumb-wrap">
+<div class="thumb-wrap" id="thumbWrap">
 
 <img class="thumb active" src="img1.png" onclick="changeImg(0)">
 <img class="thumb" src="img2.png" onclick="changeImg(1)">
@@ -120,9 +117,6 @@ body{
 
 <script>
 
-/* =====================
-   IMAGE LIST
-===================== */
 const images = [
 "img1.png",
 "img2.png",
@@ -135,10 +129,12 @@ const images = [
 let currentIndex = 0;
 
 /* =====================
-   IMAGE CHANGE
+   IMAGE RENDER
 ===================== */
 function showImage(index){
     const img = document.getElementById("main");
+    const thumbs = document.querySelectorAll(".thumb");
+
     currentIndex = index;
 
     img.onload = function(){
@@ -154,18 +150,44 @@ function showImage(index){
 
     img.src = images[index];
 
-    // 🔥 썸네일 위치 고정 + active만 변경 (절대 이동 없음)
-    document.querySelectorAll(".thumb").forEach((t,i)=>{
+    thumbs.forEach((t,i)=>{
         t.classList.toggle("active", i === index);
     });
+
+    // =====================
+    // 🔥 UX 개선 핵심 (부드러운 중앙 정렬)
+    // =====================
+    centerThumb(thumbs[index]);
 }
 
+/* =====================
+   THUMB CLICK
+===================== */
 function changeImg(index){
     showImage(index);
 }
 
 /* =====================
-   SWIPE (모바일)
+   🔥 썸네일 중앙 정렬 UX 개선
+===================== */
+function centerThumb(el){
+    const container = document.getElementById("thumbWrap");
+
+    const containerRect = container.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+
+    const offset =
+        (elRect.left + elRect.width / 2) -
+        (containerRect.left + containerRect.width / 2);
+
+    container.scrollBy({
+        left: offset,
+        behavior: "smooth"
+    });
+}
+
+/* =====================
+   SWIPE
 ===================== */
 let startX = 0;
 
