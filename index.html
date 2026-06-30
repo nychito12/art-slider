@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-/* =====================
-   BASE (모바일 최적화 핵심)
-===================== */
 body{
     margin:0;
     text-align:center;
@@ -17,11 +14,11 @@ body{
 }
 
 /* =====================
-   MAIN IMAGE (자동 최적화)
+   MAIN IMAGE
 ===================== */
 #main{
     width:auto;
-    max-width:92vw;   /* 모바일 기준 핵심 */
+    max-width:92vw;
     max-height:75vh;
     object-fit:contain;
     border-radius:8px;
@@ -29,20 +26,18 @@ body{
     transition: all 0.3s ease;
 }
 
-/* 가로 이미지 */
 #main.wide{
     max-width:96vw;
     max-height:70vh;
 }
 
-/* 세로 이미지 */
 #main.tall{
     max-width:65vw;
     max-height:85vh;
 }
 
 /* =====================
-   THUMBNAIL (모바일 스크롤 최적화)
+   THUMBNAIL (고정 UX)
 ===================== */
 .thumb-wrap{
     display:flex;
@@ -50,9 +45,7 @@ body{
     gap:6px;
     margin-top:10px;
     padding:8px;
-    scroll-behavior:smooth;
-
-    -webkit-overflow-scrolling:touch; /* 🔥 모바일 부드러운 스크롤 */
+    -webkit-overflow-scrolling:touch;
 }
 
 .thumb{
@@ -72,7 +65,7 @@ body{
 }
 
 /* =====================
-   MODAL (모바일 확대 최적화)
+   MODAL
 ===================== */
 .modal{
     display:none;
@@ -101,19 +94,17 @@ body{
 
 <body>
 
-<!-- MAIN IMAGE -->
+<!-- MAIN -->
 <img id="main" src="img1.png" onclick="openModal()">
 
 <!-- THUMBNAILS -->
 <div class="thumb-wrap">
-
-<img class="thumb active" src="img1.png" onclick="changeImg(this,'img1.png')">
-<img class="thumb" src="img2.png" onclick="changeImg(this,'img2.png')">
-<img class="thumb" src="img3.png" onclick="changeImg(this,'img3.png')">
-<img class="thumb" src="img4.png" onclick="changeImg(this,'img4.png')">
-<img class="thumb" src="img5.png" onclick="changeImg(this,'img5.png')">
-<img class="thumb" src="img6.png" onclick="changeImg(this,'img6.png')">
-
+<img class="thumb active" src="img1.png" onclick="changeImg(0)">
+<img class="thumb" src="img2.png" onclick="changeImg(1)">
+<img class="thumb" src="img3.png" onclick="changeImg(2)">
+<img class="thumb" src="img4.png" onclick="changeImg(3)">
+<img class="thumb" src="img5.png" onclick="changeImg(4)">
+<img class="thumb" src="img6.png" onclick="changeImg(5)">
 </div>
 
 <!-- MODAL -->
@@ -123,47 +114,85 @@ body{
 
 <script>
 
-function changeImg(el, src){
+const images = [
+"img1.png",
+"img2.png",
+"img3.png",
+"img4.png",
+"img5.png",
+"img6.png"
+];
+
+let currentIndex = 0;
+
+/* =====================
+   IMAGE CHANGE (핵심)
+===================== */
+function showImage(index){
     const img = document.getElementById("main");
+    currentIndex = index;
 
     img.onload = function(){
+        img.classList.remove("wide","tall");
 
-        // 초기화
-        img.classList.remove("wide");
-        img.classList.remove("tall");
-
-        // 🔥 자동 비율 최적화
         if(img.naturalWidth > img.naturalHeight * 1.2){
-            img.classList.add("wide"); // 가로
-        }
-        else if(img.naturalHeight > img.naturalWidth * 1.2){
-            img.classList.add("tall"); // 세로
+            img.classList.add("wide");
+        } else if(img.naturalHeight > img.naturalWidth * 1.2){
+            img.classList.add("tall");
         }
     };
 
-    img.src = src;
+    img.src = images[index];
 
-    // 썸네일 active
-    document.querySelectorAll(".thumb").forEach(t => t.classList.remove("active"));
-    el.classList.add("active");
-
-    // 가운데 이동 (모바일 포함)
-    el.scrollIntoView({
-        behavior:"smooth",
-        inline:"center",
-        block:"nearest"
+    // active 고정 (썸네일 안 움직임)
+    document.querySelectorAll(".thumb").forEach((t,i)=>{
+        t.classList.toggle("active", i === index);
     });
+}
+
+function changeImg(index){
+    showImage(index);
+}
+
+/* =====================
+   SWIPE (모바일)
+===================== */
+let startX = 0;
+
+document.addEventListener("touchstart", e=>{
+    startX = e.touches[0].clientX;
+});
+
+document.addEventListener("touchend", e=>{
+    let diff = startX - e.changedTouches[0].clientX;
+
+    if(Math.abs(diff) > 50){
+        if(diff > 0){
+            next();
+        } else {
+            prev();
+        }
+    }
+});
+
+function next(){
+    if(currentIndex < images.length - 1){
+        showImage(currentIndex + 1);
+    }
+}
+
+function prev(){
+    if(currentIndex > 0){
+        showImage(currentIndex - 1);
+    }
 }
 
 /* =====================
    MODAL
 ===================== */
 function openModal(){
-    const modal = document.getElementById("modal");
-    const modalImg = document.getElementById("modalImg");
-
-    modal.classList.add("show");
-    modalImg.src = document.getElementById("main").src;
+    document.getElementById("modal").classList.add("show");
+    document.getElementById("modalImg").src = images[currentIndex];
 }
 
 function closeModal(){
