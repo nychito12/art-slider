@@ -12,11 +12,17 @@ body{
     text-align:center;
 }
 
-/* 메인 이미지 (작게) */
+/* 메인 이미지 */
 #main{
     width:100%;
     max-width:500px;
     border-radius:8px;
+    transition: all 0.3s ease;
+}
+
+/* 🔥 가로 이미지면 더 크게 */
+#main.wide{
+    max-width:750px;
 }
 
 /* 썸네일 */
@@ -38,12 +44,7 @@ body{
 <body>
 
 <!-- 메인 이미지 -->
-<img id="main" src="img1.png" style="
-    width:100%;
-    max-width:750px;
-    max-height:550px;
-    object-fit:contain;
-">
+<img id="main" src="img1.png">
 
 <!-- 썸네일 -->
 <div class="thumb-wrap">
@@ -59,7 +60,18 @@ body{
 
 <script>
 function changeImg(src){
-    document.getElementById("main").src = src;
+    const img = document.getElementById("main");
+
+    img.onload = function(){
+        // 가로 이미지면 wide 클래스 추가
+        if(img.naturalWidth > img.naturalHeight){
+            img.classList.add("wide");
+        } else {
+            img.classList.remove("wide");
+        }
+    };
+
+    img.src = src;
 }
 </script>
 
